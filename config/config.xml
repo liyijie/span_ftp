@@ -10,19 +10,19 @@
     <localfile>111.zip</localfile>
     <thread_num>5</thread_num>
     <sleep>15</sleep>
-    <test></test>
+    <test>test</test>
   </upload>
 
   <download>
-    <ip>172.30.4.172</ip>
-    <user>lte</user>
-    <password>ltelte</password>
-    <remotedir>/download/</remotedir>
+    <ip>172.30.1.135</ip>
+    <user>liyijie</user>
+    <password>lteomc.2</password>
+    <remotedir>/LTE_路测/</remotedir>
     <localdir>./download/</localdir>
-    <remotefile>222.zip</remotefile>
+    <remotefile>JetBrains.dotTrace.Performance.zip</remotefile>
     <sleep>15</sleep>
     <thread_num>5</thread_num>
-    <test></test>
+    <test>test</test>
   </download>
 
  </context> 

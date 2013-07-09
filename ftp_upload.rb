@@ -2,5 +2,7 @@
 
 require_relative "app/span_ftp"
 
-controller = SpanFtp::Task::FtptaskController.new :upload
-controller.run
+File.open("upload.log", "w") do |file|
+  controller = SpanFtp::Task::FtptaskController.new :upload, file
+  controller.run
+end

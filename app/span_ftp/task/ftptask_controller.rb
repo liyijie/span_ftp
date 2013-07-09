@@ -4,14 +4,17 @@ module SpanFtp::Task
 
   class FtptaskController
 
-    def initialize type
+    def initialize type, logger
       @type = type
       @config_map = {}
       @task_map = {}
       @total_file_size = 0
       @process_file_size = 0
+      @begintime = 0
+      @endtime = 0
       @index = 1
       load_config
+      @logger = logger
     end
 
     def run
@@ -20,22 +23,37 @@ module SpanFtp::Task
       loop do
         begin
           puts "=====================begin #{@index} ftp cycle==================="
+          @logger.puts "=====================begin #{@index} ftp cycle==================="
           process
+          @endtime = Time.now
+          interval = @endtime - @begintime
+          speed = @process_file_size * 8.0 / 1024 / interval
+          speed = speed.round(2)
+          puts "file size is:#{@process_file_size * 8.0 /1024}kb, spend time is:#{interval}s, speed is:#{speed}kbps"
+          @logger.puts "file size is:#{@process_file_size * 8.0 /1024}kb, spend time is:#{interval}s, speed is:#{speed}kbps"
           puts "=====================end #{@index} ftp cycle==================="
-          sleep @sleep
+          @logger.puts "=====================end #{@index} ftp cycle==================="
+          @logger.flush
+          sleep(@sleep - 1) if (@sleep - 1 > 0)
         rescue Exception => e 
-          puts e
-          puts e.backtrace   
-          sleep 1
+          # puts e
+          # puts e.backtrace 
+          @endtime = Time.now
+          interval = @endtime - @begintime
+          speed = @process_file_size * 8.0 / 1024
+          speed = speed.round(2)
+          puts "file size is:#{@process_file_size * 8.0 /1024}kb, spend time is:#{interval}s, speed is:#{speed}kbps" 
+          @logger.puts "file size is:#{@process_file_size * 8.0 /1024}kb, spend time is:#{interval}s, speed is:#{speed}kbps" 
           next
         ensure
           (1..@thread_num).each do |index|
             @task_map[index].stop_task if @task_map[index]
           end
           @index += 1
+          @logger.flush
+          sleep 1
         end
       end
-
     end
 
     private
@@ -91,6 +109,7 @@ module SpanFtp::Task
       monitor_ftp = @task_map[1].create_ftp_session
       @total_file_size = @task_map[1].total_file_size monitor_ftp
       @process_file_size = 0
+      @begintime = Time.now
 
       loop do
         sleep 1
