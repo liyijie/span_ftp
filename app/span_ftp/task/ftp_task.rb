@@ -6,6 +6,7 @@ module SpanFtp::Task
     def initialize config_map, remotefile, localfile
       super()
       @ip = config_map[:ip]
+      @port = config_map[:port] || 21
       @user = config_map[:user]
       @password = config_map[:password]
       @remotedir = config_map[:remotedir]
@@ -22,7 +23,7 @@ module SpanFtp::Task
 
     def create_ftp_session
       ftp = Net::FTP.new()
-      ftp.connect(@ip, 21) #默认端口是21  
+      ftp.connect(@ip, @port) #默认端口是21  
       ftp.passive = true
       ftp.login(@user, @password)
       ftp.chdir @remotedir

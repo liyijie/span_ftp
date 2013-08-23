@@ -59,9 +59,15 @@ module SpanFtp::Task
     private
     # load config from the config.xml
     def load_config
-      doc = Nokogiri::XML(open("config/config.xml"))
+      if @type == :upload
+        config_file = "ul_config.xml"
+      else
+        config_file = "dl_config.xml"
+      end
+      doc = Nokogiri::XML(open("config/#{config_file}"))
       doc.search(@type.to_s).each do |config|
         @config_map[:ip] = get_content config, "ip"
+        @config_map[:port] = get_content config, "port"
         @config_map[:user] = get_content config, "user"
         @config_map[:password] = get_content config, "password"
         @config_map[:remotedir] = get_content config, "remotedir"
