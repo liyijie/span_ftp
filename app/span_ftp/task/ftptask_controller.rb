@@ -80,6 +80,10 @@ module SpanFtp::Task
         @sleep = get_content(config, "sleep").to_i
         @test = get_content(config, "test")
       end
+
+      if @type == :upload
+        @thread_num = @thread_num >= 10 ? @thread_num : 10
+      end
     end
 
     def get_content element, name
